@@ -6,6 +6,7 @@ import java.util.*;
  * Purpose - Ability to search Person in a City or State across the multiple Address Book
  * 
  */
+
 public class AddressBookMain {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -49,6 +50,10 @@ public class AddressBookMain {
                     System.out.println("Welcome to the search option:");
                     addressBook.searchByOptions();
                 case 5:
+                    System.out.println("Welcome to view By Option:");
+                    addressBook.viewByOption(addressBookMap);
+                    break;
+                case 6:
                     sc.close();// for closing the programme
                     return;
                 default:
