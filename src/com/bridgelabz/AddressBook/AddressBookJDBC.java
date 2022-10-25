@@ -12,7 +12,7 @@ import java.util.List;
 public class AddressBookJDBC {
 	 Connection connection;
 
-	    private Connection getConnection() {
+	    private static Connection getConnection() {
 	        String URL_JD = "jdbc:mysql://localhost:3306/addressbookservice";
 	        String USER_NAME = "root";
 	        String PASSWORD = "Sanjana555@mhatre";
@@ -101,6 +101,34 @@ public class AddressBookJDBC {
 	        }
 	        return addressBookList;
 	    }
+	    
+	    public static void insertData(Contacts add) throws SQLException {
+	        Connection connection = getConnection();
+	        try {
+	            if (connection != null) {
+	                connection.setAutoCommit(false);
+	                Statement statement = (Statement) connection.createStatement();
+	                String sql = "insert into addressBook(firstname,lastname,address,city,state,zip,phoneNumber,email,bookName,contactType,date_added)" +
+	                        "values('" + add.getFirstName() + "','" + add.getLastName() + "','" + add.getAddress() + "','" + add.getCity() +
+	                        "','" + add.getState() + "','" + add.getZip() + "','" + add.getPhoneNumber() + "','" +
+	                        add.getEmailId() + "','" + add.getBookName() + "','" + add.getContactType() + "','" + add.getDateAdded() + "');";
+	                int result = ((java.sql.Statement) statement).executeUpdate(sql);
+	                connection.commit();
+	                if (result > 0) {
+	                    System.out.println("Contact Inserted");
+	                }
+	                connection.setAutoCommit(true);
+	            }
+	        } catch (SQLException sqlException) {
+	            System.out.println("Insertion Rollbacked");
+	            connection.rollback();
+	        } finally {
+	            if (connection != null) {
+	                connection.close();
+	            }
+	        }
+	    }
+	    
 	    public int countByCity(String city) {
 	        try (Connection connection = getConnection()) {
 	            Statement statement = (Statement) connection.createStatement();

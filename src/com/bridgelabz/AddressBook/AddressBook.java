@@ -1,5 +1,6 @@
 package com.bridgelabz.AddressBook;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
@@ -64,4 +65,30 @@ public class AddressBook {
                 break;
         }
 }
+    private static void addNewContact() throws SQLException {
+        Contacts add = new Contacts();
+        System.out.println("Enter First Name:");
+        add.setFirstName(sc.next());
+        System.out.println("Enter Last name:");
+        add.setLastName(sc.next());
+        System.out.println("Enter address");
+        add.setAddress(sc.next());
+        System.out.println("Enter city");
+        add.setCity(sc.next());
+        System.out.println("Enter state");
+        add.setState(sc.next());
+        System.out.println("Enter Zip");
+        add.setZip(sc.nextInt());
+        System.out.println("Enter PhoneNumber");
+        add.setPhoneNumber(sc.next());
+        System.out.println("Enter Email");
+        add.setEmailId(sc.next());
+        System.out.println("Enter Addressbook name");
+        add.setBookName(sc.next());
+        System.out.println("Enter contact type");
+        add.setContactType(sc.next());
+        add.setDateAdded(LocalDate.now());
+        AddressBookJDBC.insertData(add);
+
+    }
 }
