@@ -1,65 +1,77 @@
 package com.bridgelabz.AddressBook;
 
-import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;	
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import com.opencsv.CSVWriter;
+
 
 public class FileIO {
-    public void writeData(Map<String, AddressBookMain> addressBook) {
-        File file = new File("C:\\Users\\DELL\\workspace");
-        BufferedWriter bw = null;;
-        try {
-            //create new BufferedWriter for the output file
-            bw = new BufferedWriter(new FileWriter(file));
+	static final File FILE_PATH = new File("C:\\Users\\ADMIN\\eclipse-workspace\\RFP_AddressBook\\src\\com\\bridgelabz\\Files");
+	static Scanner sc = new Scanner(System.in);
+	  public enum FileType {
+	        TXT, CSV
+	    }
 
-            //iterate map entries
-            for (Map.Entry<String, AddressBookMain> entry : addressBook.entrySet()) {
-                //put key and value separated by a colon
-                bw.write(entry.getKey() + ":" + entry.getValue());
+	static boolean read(File filePath) throws FileNotFoundException {
+		for (File file : filePath.listFiles()) {
+			System.out.println("AddressBook name: " + file.getName());
+			Scanner scanner = new Scanner(file);
+			while (scanner.hasNextLine()) {
+				System.out.println(scanner.nextLine());
+			}
+		}
+		return true;
+	}
 
-                //new line
-                bw.newLine();
-            }
-            bw.flush();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+	static boolean writeTxtFile(ArrayList<Contact> addressBook, String addressBookName) throws IOException {
+		System.out.println("Enter file name - ");
+		addressBookName = sc.next();
+		File file = new File(FILE_PATH + "txt//" + addressBookName + ".txt");
+		boolean isCreated = file.createNewFile();
+		if (!isCreated) {
+			file.delete();
+			file.createNewFile();
+		}
+		System.out.println("file created");
+		FileWriter fileWriter = new FileWriter(file);
+		String data = "";
+		for (Contact contactPerson : addressBook) {
+			data = data.concat(contactPerson.toString()).concat("\n");
+		}
+		System.out.println(data);
+		fileWriter.write(data);
+		fileWriter.close();
+		return true;
+	}
 
-    //  public List<Contacts> readData() {
-    public static Map<String,  String> readData() {
-        Map<String, String> mapFileContents = new HashMap<>();
-        BufferedReader br = null;
-        try {
-            //create file object
-            File file = new File("Address Book.txt");
-
-            //create BufferedReader object from the File
-            br = new BufferedReader(new FileReader(file));
-
-            String line = null;
-            //read file line by line
-            while ((line = br.readLine()) != null) {
-
-                //split the line by :
-                String[] parts = line.split(":");
-                String bookName = parts[0].trim();
-                String fname = parts[1].trim();
-                mapFileContents.put(bookName, fname);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            //Always close the BufferedReader
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (Exception e) {
-                }
-            }
-        }
-        return mapFileContents;
-    }
+	public static boolean writeCsvFile(ArrayList<Contact> addressBook, String addressBookName) throws IOException {
+		System.out.println("Enter file name - ");
+		addressBookName = sc.next();
+		File file = new File(FILE_PATH + "csv//" + addressBookName + ".csv");
+		boolean isCreated = file.createNewFile();
+		if (!isCreated) {
+			file.delete();
+			file.createNewFile();
+		}
+		System.out.println("file created");
+		FileWriter fileWriter = new FileWriter(file);
+		try (CSVWriter csvWriter = new CSVWriter(fileWriter)) {
+			List<String[]> data = new ArrayList<>();
+			for (Contact person : addressBook) {
+				String[] contactData = new String[] { person.getFirstName(), person.getLastName(), person.getAddress(),
+						person.getCity(), person.getState(), String.valueOf(person.getZip()),
+						String.valueOf(person.getPhoneNumber()), person.getEmail() };
+				data.add(contactData);
+			}
+			csvWriter.writeAll(data);
+		}
+		fileWriter.close();
+		return true;
+	}
 }
