@@ -1,21 +1,69 @@
 package com.bridgelabz.AddressBook;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+
+/**
+ * Purpose - Ability to Read or Write the Address Book with Persons Contact into a File using File IO
+ * 
+ */
 
 public class AddressBook {
-    public static ArrayList<Contacts> contactList = new ArrayList<>();
-    public static Map<String, Contacts> nameHashMap = new HashMap<>();
-    public static Map<String, Contacts> cityHashMap = new HashMap<>();
-    public static Map<String, Contacts> stateHashMap = new HashMap<>();
-
+    static public ArrayList<Contact> contactList = new ArrayList<>();
     static Scanner sc = new Scanner(System.in);
-    static AddressBookMain addressBook = new AddressBookMain();
+    public static Map<String, Contact> nameHashMap = new HashMap<String, Contact>();
+    public static Map<String, Contact> cityHashMap = new HashMap<String, Contact>();
+    public static Map<String, Contact> stateHashMap = new HashMap<String, Contact>();
 
-    public boolean addContact(Contacts contact) {
-        List<Contacts> checkByName = searchByName(contact.getFirstName());
-        for (Contacts equalName : checkByName)
+    public static void viewByOption(Map<String, AddressBook> map) {
+        System.out.println("Enter you choice \n1.view by name \n2. view by city \n3.view by state \n4.back");
+        int choice = sc.nextInt();
+        switch (choice) {
+            case 1:
+                viewByName(nameHashMap);
+                break;
+            case 2:
+                viewByCity(cityHashMap);
+                break;
+            case 3:
+                viewByState(stateHashMap);
+                break;
+            case 4:
+                return;
+            default:
+                System.out.println("Please enter a valid choice");
+        }
+    }
+
+    public static void countByOption() {
+
+        System.out.println("1. Count City ");
+        System.out.println("2. Count State");
+        System.out.println("3. Back ");
+        System.out.println("Enter Your Choice : ");
+        int choice = sc.nextInt();
+        sc.nextLine();
+        switch (choice) {
+            case 1:
+                Map<String, Long> countCity = contactList.stream()
+                        .collect(Collectors.groupingBy(e -> e.getCity(), Collectors.counting()));
+                System.out.println(countCity + "\n");
+                break;
+            case 2:
+                Map<String, Long> countState = contactList.stream()
+                        .collect(Collectors.groupingBy(e -> e.getState(), Collectors.counting()));
+                System.out.println(countState + "\n");
+                break;
+            case 3:
+                return;
+            default:
+                System.out.println("Invalid Option");
+        }
+    }
+    public boolean addContact(Contact contact) {
+        List<Contact> checkByName = searchByName(contact.getFirstName());
+        for (Contact equalName : checkByName)
             if (equalName.equals(contact))
                 return false;
         contactList.add(contact);
@@ -23,44 +71,44 @@ public class AddressBook {
     }
 
     // method for search contact by name
-    public List<Contacts> searchByName(String name) {// collection list of element
+    public List<Contact> searchByName(String name) {
         // stream and lambda for find filter given name from arraylist
         return contactList.stream().filter(person -> person.getFirstName().equalsIgnoreCase(name))
                 .collect(Collectors.toList());
     }
 
-    public List<Contacts> searchByCity(String city) {
+    public List<Contact> searchByCity(String city) {
         return contactList.stream().filter(person -> person.getCity().equalsIgnoreCase(city))
                 .collect(Collectors.toList());
     }
 
-    public List<Contacts> searchByState(String state) {
+    public List<Contact> searchByState(String state) {
         return contactList.stream().filter(person -> person.getState().equalsIgnoreCase(state))
                 .collect(Collectors.toList());
     }
-
-    // Method to view person
-    public static void viewByName(Map<String, Contacts> nameHashMap) {
+    //method to view person
+    public static void viewByName(Map<String, Contact> nameHashMap) {
         nameHashMap.entrySet().stream().forEach(e -> System.out.println(e.getKey() + "=" + e.getValue().toString()));
     }
 
-    public static void viewByCity(Map<String, Contacts> cityHashMap) {
+    public static void viewByCity(Map<String, Contact> cityHashMap) {
         cityHashMap.entrySet().stream().forEach(e -> System.out.println(e.getKey() + "=" + e.getValue().toString()));
     }
 
-    public static void viewByState(Map<String, Contacts> stateHashMap) {
+    public static void viewByState(Map<String, Contact> stateHashMap) {
         stateHashMap.entrySet().stream().forEach(e -> System.out.println(e.getKey() + "=" + e.getValue().toString()));
     }
 
-    public static List<Contacts> sortBy(Function<? super Contacts, ? extends String> key) {
+    public static List<Contact> sortBy(Function<? super Contact, ?  extends String> key) {
+        return contactList.stream().sorted(Comparator.comparing(key)).collect(Collectors.toList());
+    }
+    public static List<Contact> sortByZip(Function<? super Contact, ?  extends Long> key) {
         return contactList.stream().sorted(Comparator.comparing(key)).collect(Collectors.toList());
     }
 
-    public static List<Contacts> sortByZip(Function<? super Contacts, ? extends Long> key) {
-        return contactList.stream().sorted(Comparator.comparing(key)).collect(Collectors.toList());
-    }
+
     // method for edit contact
-    public boolean editContact(Contacts current, Contacts edit) {
+    public boolean editContact(Contact current, Contact edit) {
         if (!contactList.contains(current))
             return false;
         contactList.remove(current);
@@ -69,7 +117,7 @@ public class AddressBook {
     }
 
     // method for delete contact
-    public boolean deleteContact(Contacts contacts) {
+    public boolean deleteContact(Contact contacts) {
         contactList.remove(contacts);
         return true;
     }
@@ -87,8 +135,7 @@ public class AddressBook {
     }
 
     // method for adding details
-    public static Contacts readContact() {
-        Scanner sc = new Scanner(System.in);
+    public static Contact readContact() {
         System.out.print("Enter First Name: ");
         String firstName = sc.nextLine();
         System.out.print("Enter Last Name: ");
@@ -103,50 +150,50 @@ public class AddressBook {
         Long zip = sc.nextLong();
         sc.nextLine();
         System.out.print("Enter Phone Number: ");
-        Long phoneNumber = sc.nextLong();
+        Long phoneNum = sc.nextLong();
         sc.nextLine();
         System.out.print("Enter Email ID: ");
         String email = sc.nextLine();
-        return new Contacts(firstName, lastName, address, city, state, zip, phoneNumber, email);
+        return new Contact(firstName, lastName, address, city, state, zip, phoneNum, email);
     }
 
     // method for show option for contacts
     public static void addressBookOptions(AddressBook addressBook) {
         Scanner sc = new Scanner(System.in);
         while (true) {
-            System.out.println("\n-------------------------- Address Book Contact Option --------------------------");
+            System.out.println("\nAddress Book Contact Options");
             System.out.println("1. Add contact details");
             System.out.println("2. Edit contact details");
             System.out.println("3. Delete contact details");
             System.out.println("4. Show contacts details");
-            System.out.println("5. Back to main menu");
+            System.out.println("5. Sort Address Book");
+            System.out.println("6. Back to main menu");
             System.out.print("Enter Your choice: ");
             int choice = sc.nextInt();
             sc.nextLine();
             switch (choice) {
                 case 1:
-                    if (addressBook.addContact(readContact())) // call addcontact with passing method readcontact
-                        System.out.println("Cotact Added Successfully....!");
+                    if (addressBook.addContact(readContact())) // call add contact with passing method read contact
+                        System.out.println("Contact Added Successfully");
                     else
-                        System.out.println("Contact Already Exist....!");
+                        System.out.println("Contact Already Exists");
                     break;
                 case 2:
                     System.out.println("Enter First name to edit contact: ");
                     String name = sc.nextLine();
-                    List<Contacts> equalName = addressBook.searchByName(name);// list of equal first name
+                    List<Contact> equalName = addressBook.searchByName(name);// list of equal first name
                     if (equalName.isEmpty())// if not match found
-                        System.out.println("Data Not Found....!");
+                        System.out.println("List Empty!!!");
                     else if (equalName.size() == 1) {// if only one equal match found
-                        addressBook.editContact(equalName.get(0), readContact()); // call edit method with name and method
-                        // parameter
-                        System.out.println("Contact data modified....!");
+                        addressBook.editContact(equalName.get(0), readContact()); // call edit method
+                        System.out.println("Contact data modified");
                     } else {// if more than one firstname match found in equal name list
-                        equalName.forEach(x -> System.out.println(equalName.indexOf(x) + "  " + x.toString()));
+                        equalName.forEach(i -> System.out.println(equalName.indexOf(i) + "  " + i.toString()));
                         System.out.println("Enter index to edit : ");
                         int i = sc.nextInt();
                         sc.nextLine();
                         addressBook.editContact(equalName.get(i), readContact());
-                        System.out.println("Contact Modified....!");
+                        System.out.println("Contact Modified");
                     }
                     break;
                 case 3:
@@ -154,23 +201,25 @@ public class AddressBook {
                     name = sc.nextLine();
                     equalName = addressBook.searchByName(name);
                     if (equalName.isEmpty())
-                        System.out.println("Data Not Found.....!");
+                        System.out.println("List Empty!!!");
                     else if (equalName.size() == 1) {
                         addressBook.deleteContact(equalName.get(0));
-                        System.out.println("Contact data deleted....!");
+                        System.out.println("Contact deleted");
                     } else {
                         equalName.forEach(x -> System.out.println(equalName.indexOf(x) + "  " + x.toString()));
                         System.out.println("Enter an index to delete");
                         int index = sc.nextInt();
                         sc.nextLine();
                         addressBook.deleteContact(equalName.get(index));
-                        System.out.println("Cotact data deleted....!");
+                        System.out.println("Contact deleted");
                     }
                     break;
                 case 4:
-                    System.out.println(addressBook.toString()); // call tostring method for showing details
+                    System.out.println(addressBook.toString());
                     break;
-                case 5:
+                case 5:sortByOption();
+                    break;
+                case 6:
                     return;
                 default:
                     System.out.println("Invalid Choice!");
@@ -180,7 +229,7 @@ public class AddressBook {
     }
 
     public void searchByOptions() {
-        AddressBookMain addressBook = new AddressBookMain();
+        AddressBook addressBook = new AddressBook();
         Scanner sc = new Scanner(System.in);
         System.out.println("1. By name");
         System.out.println("2. By city");
@@ -208,94 +257,26 @@ public class AddressBook {
             case 4:
                 return;
             default:
-                System.out.println("INVALID CHOICE!");
-        }
-    }
-    // method for view element by option
-    public static void viewByOption(Map<String, AddressBook> addressBookMap) {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("1. View By name");
-        System.out.println("2. View By city");
-        System.out.println("3. View By state");
-        System.out.println("4. Back");
-        System.out.print("Enter Your choice: ");
-        int choice = sc.nextInt();
-        sc.nextLine();
-        switch (choice) {
-            case 1:
-                viewByName(nameHashMap);
-                break;
-            case 2:
-                viewByCity(cityHashMap);
-                break;
-            case 3:
-                viewByState(stateHashMap);
-                break;
-            case 4:
-                return;
-            default:
-                System.out.println("INVALID CHOICE!");
-        }
-    }
-
-    //method to count element by option
-    public void countByOption() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("1. Count City ");
-        System.out.println("2. Count State");
-        System.out.println("3. Back ");
-        System.out.println("Enter Your Choice : ");
-        int choice = sc.nextInt();
-        sc.nextLine();
-        switch (choice) {
-            case 1:
-                Map<String, Long> countCity = contactList.stream()
-                        .collect(Collectors.groupingBy(e -> e.getCity(), Collectors.counting()));
-                System.out.println(countCity + "\n");
-                break;
-            case 2:
-                Map<String, Long> countState = contactList.stream()
-                        .collect(Collectors.groupingBy(e -> e.getState(), Collectors.counting()));
-                System.out.println(countState + "\n");
-                break;
-            case 3:
-                return;
-            default:
-                System.out.println("Invalid Option");
+                System.out.println("Please Enter a Valid Choice");
         }
     }
 
     public static void sortByOption() {
-        System.out.println("1. By first name");
-        System.out.println("2. By last name");
-        System.out.println("3. By city");
-        System.out.println("4. By state");
-        System.out.println("5. By zip");
-        System.out.println("6. Back");
-        System.out.print("Your choice: ");
-
+        System.out.println("Choose how you want to sort 1. first name 2. last name 3.city 4.state 5.zip");
         int choice = sc.nextInt();
-        sc.nextLine();
-        switch (choice) {
-            case 1:
-                AddressBook.sortBy(Contacts::getFirstName).forEach(System.out::println);
+        switch(choice) {
+            case 1 : AddressBook.sortBy(Contact::getFirstName).forEach(System.out::println);
                 break;
-            case 2:
-                AddressBook.sortBy(Contacts::getLastName).forEach(System.out::println);
+            case 2 : AddressBook.sortBy(Contact::getLastName).forEach(System.out::println);
                 break;
-            case 3:
-                AddressBook.sortBy(Contacts::getCity).forEach(System.out::println);
+            case 3 : AddressBook.sortBy(Contact::getCity).forEach(System.out::println);
                 break;
-            case 4:
-                AddressBook.sortBy(Contacts::getState).forEach(System.out::println);
+            case 4 : AddressBook.sortBy(Contact::getState).forEach(System.out::println);
                 break;
-            case 5:
-                AddressBook.sortByZip(Contacts::getZip).forEach(System.out::println);
+            case 5 : AddressBook.sortByZip(Contact::getZipCode).forEach(System.out::println);
                 break;
-            case 6:
-                return;
             default:
-                System.out.println("INVALID CHOICE!");
+                System.out.println("Please enter a valid choice");
         }
     }
 }
