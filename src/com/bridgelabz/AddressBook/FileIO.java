@@ -1,6 +1,6 @@
 package com.bridgelabz.AddressBook;
 
-import java.io.File;	
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,15 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import com.opencsv.CSVWriter;
-
-
 public class FileIO {
-	static final File FILE_PATH = new File("C:\\Users\\ADMIN\\eclipse-workspace\\RFP_AddressBook\\src\\com\\bridgelabz\\Files");
+	static final File FILE_PATH = new File(
+			"C:\\Users\\ADMIN\\eclipse-workspace\\RFP_AddressBook\\src\\com\\bridgelabz\\Files");
 	static Scanner sc = new Scanner(System.in);
-	  public enum FileType {
-	        TXT, CSV
-	    }
+
+	public enum FileType {
+		TXT, CSV
+	}
 
 	static boolean read(File filePath) throws FileNotFoundException {
 		for (File file : filePath.listFiles()) {
@@ -73,5 +72,24 @@ public class FileIO {
 		}
 		fileWriter.close();
 		return true;
+	}
+
+
+
+	public static void writeJsonFile(ArrayList<Contact> addressBook, String addressBookName) throws IOException {
+		File file = new File(FILE_PATH + "json//" + addressBookName + ".json");
+		boolean isCreated = file.createNewFile();
+		if (!isCreated) {
+			file.delete();
+			file.createNewFile();
+		}
+		FileWriter writer = new FileWriter(file);
+		JsonObject gson = new JsonObject();
+		String data = "";
+		for (Contact person : addressBook) {
+			data = data.concat(gson.toJson(person) + "\n");
+		}
+		writer.write(data);
+		writer.close();
 	}
 }

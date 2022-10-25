@@ -271,25 +271,29 @@ public class AddressBook {
 		}
 	}
 
-	void readAddressBook() throws FileNotFoundException, SQLException {
-		System.out.println("Select option" + "1.read from txt" + "2.read from csv" + "3.back");
-        int option = sc.nextInt();
-        switch (option) {
-            case 1:
-                FileIO.read(new File(FileIO.FILE_PATH + ("txt//")));
-                break;
-            case 2:
-                FileIO.read(new File(FileIO.FILE_PATH + ("csv//")));
-                break;
-            case 3:
-                break;
-            default:
-                readAddressBook();
+	void readAddressBook() throws FileNotFoundException {
+		System.out
+				.println("Select option \n1.read from txt file \n2.read from csv file\n3.read from json file\n4.back");
+		int option = sc.nextInt();
+		switch (option) {
+		case 1:
+			FileIO.read(new File(FileIO.FILE_PATH + ("txt//")));
+			break;
+		case 2:
+			FileIO.read(new File(FileIO.FILE_PATH + ("csv//")));
+			break;
+		case 3:
+			FileIO.read(new File(FileIO.FILE_PATH + ("json//")));
+			break;
+		case 4:
+			break;
+		default:
+			readAddressBook();
 		}
 	}
 
 	void writeAddressBook() throws IOException {
-		System.out.println("Select option" + "1.Write from txt" + "2.Write from csv" + "3.back");
+		System.out.println("Select option \n1.Write to txt file \n2.write to csv file \n3.write to json file \n4.back");
 		int option = sc.nextInt();
 		switch (option) {
 		case 1:
@@ -297,17 +301,20 @@ public class AddressBook {
 				FileIO.writeTxtFile(addressBookList.get(key), key);
 			}
 			break;
-		 case 2:
-             for (String key : addressBookList.keySet()) {
-                 FileIO.writeCsvFile(addressBookList.get(key), key);
-             }
-             break;
-         case 3:
-             break;
-         default:
-             writeAddressBook();
-             break;
-
+		case 2:
+			for (String key : addressBookList.keySet()) {
+				FileIO.writeCsvFile(addressBookList.get(key), key);
+			}
+			break;
+		case 3:
+			for (String key : addressBookList.keySet()) {
+				FileIO.writeJsonFile(addressBookList.get(key), key);
+			}
+		case 4:
+			break;
+		default:
+			writeAddressBook();
+			break;
 
 		}
 	}
