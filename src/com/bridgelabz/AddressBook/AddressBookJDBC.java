@@ -58,4 +58,17 @@ public class AddressBookJDBC {
 	        return addressBookList;
 
 	    }
+	    public void updateCityByZip(String address, String city, String state, int zip, int srNo) {
+	        try (Connection connection = getConnection()) {
+	            Statement statement = (Statement) connection.createStatement();
+	            String query = "Update addressBook set address=" + "'" + address + "'" + ", " + "city=" + "'" + city + "'" + ", " + "state=" + "'" + state + "'" + ", " + "zip=" + zip + " where srNo=" + srNo + ";";
+	            int result = ((java.sql.Statement) statement).executeUpdate(query);
+	            System.out.println(result);
+	            if (result > 0) {
+	                System.out.println("Address Updated Successfully");
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
 }

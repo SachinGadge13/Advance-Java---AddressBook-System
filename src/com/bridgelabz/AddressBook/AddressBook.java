@@ -29,4 +29,9 @@ public class AddressBook {
             System.out.println(employee + "\n");
         }
     }
+    private static void cityUpdate() {
+    	AddressBookJDBC addressBookRepo = new AddressBookJDBC();
+        System.out.println("Enter the address,city,state, zip and Serial Number  to Update");
+        addressBookRepo.updateCityByZip(sc.next(), sc.next(), sc.next(), sc.nextInt(), sc.nextInt());
+    }
 }
