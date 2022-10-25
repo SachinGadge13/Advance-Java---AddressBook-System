@@ -45,4 +45,23 @@ public class AddressBook {
             System.out.println(employee + "\n");
         }
     }
+    
+    private static void retrieveCityOrState() {
+    	AddressBookJDBC add = new AddressBookJDBC();
+        System.out.println("Enter 1 -> Contacts count by City\n" +
+                "2 -> Contacts count by State");
+
+        switch (sc.nextInt()) {
+            case 1:
+                System.out.println("Enter city Name");
+                int cityContactsCount = add.countByCity(sc.next());
+                System.out.println("Number of Contacts is Given city= " + cityContactsCount);
+                break;
+            case 2:
+                System.out.println("Enter state name");
+                int stateContactsCount=  add.countByState(sc.next());
+                System.out.println("Number of Contacts is Given state= " + stateContactsCount);
+                break;
+        }
+}
 }
