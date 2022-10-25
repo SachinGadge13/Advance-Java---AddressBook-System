@@ -8,32 +8,33 @@ public class TestAddressBook {
     public void test1ReadData()
     {
         Address a=new Address();
-        Assert.assertEquals(6,a.readData().size());
+        Assert.assertEquals(9,a.readData().size());
     }
     @Test
     public void test2CheckUpdate()
     {
         Address a=new Address();
-        a.updateContact("address","h",2);
+        a.updateContact("address","l",2);
     }
     @Test
     public void test3CheckDoj()
     {
         Address a=new Address();
-        Assert.assertEquals(5,a.findDoj("2015-01-01","2019-01-01"));
+        Assert.assertEquals(3,a.findDoj("2019-01-01","2019-12-12"));
     }
     @Test
     public void test4CheckCity()
     {
         Address a=new Address();
-        Assert.assertEquals(1,a.RetriveField("city","g"));
+        Assert.assertEquals(3,a.RetriveField("city","g"));
     }
     @Test
     public void test5CheckState()
     {
         Address a=new Address();
-        Assert.assertEquals(3,a.RetriveField("state","m"));
+        Assert.assertEquals(2,a.RetriveField("state","l"));
     }
+
     @Test
     public void test6CheckInsert()
     {
@@ -84,6 +85,5 @@ public class TestAddressBook {
         arr.add(c);
         a.insertMultiple(arr);
         Assert.assertEquals(count+2,a.readData().size());
-
     }
 }
